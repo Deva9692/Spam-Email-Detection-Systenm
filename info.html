@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Based Spam Email Detection System</title>
+<style>
+    @page {
+        size: 1400px 850px;
+        margin: 0;
+    }
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    body {
+        background-color: #000000;
+        color: #ffffff;
+        min-height: 100vh;
+        width: 100vw;
+        padding: 24px 34px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    /* 1. Header Section with Back Navigation Link */
+    .header-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 2px solid #ffff00;
+        padding-bottom: 12px;
+        margin-bottom: 14px;
+    }
+    .header-title-group {
+        text-align: left;
+    }
+    .header-title-group h1 {
+        font-size: 25px;
+        font-weight: 800;
+        color: #ffff00;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        margin-bottom: 3px;
+    }
+    .header-title-group p {
+        font-size: 12.5px;
+        color: #3b82f6;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+    .nav-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #000000;
+        color: #3b82f6;
+        border: 2px solid #3b82f6;
+        padding: 7px 14px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+        transition: 0.2s ease-in-out;
+    }
+    .nav-btn:hover {
+        background: #3b82f6;
+        color: #ffffff;
+    }
+
+    /* 2. Supervisor & Team Members Section */
+    .academic-section {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: 16px;
+        margin-bottom: 14px;
+    }
+    .prof-panel {
+        border: 2px solid #8b5cf6;
+        border-radius: 6px;
+        padding: 10px 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: #050505;
+    }
+    .guide-tag {
+        font-size: 11px;
+        font-weight: 800;
+        color: #8b5cf6;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 4px;
+    }
+    .prof-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 2px;
+    }
+    .prof-dept {
+        font-size: 12px;
+        color: #ffff00;
+    }
+
+    .team-panel {
+        border: 2px solid #3b82f6;
+        border-radius: 6px;
+        padding: 10px 14px;
+        background: #050505;
+    }
+    .team-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    .team-tag {
+        font-size: 11px;
+        font-weight: 800;
+        color: #3b82f6;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+    }
+    .branch-tag {
+        font-size: 11px;
+        font-weight: 800;
+        color: #ffff00;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+    }
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+    }
+    .member-card {
+        border: 1px solid #ffffff;
+        border-radius: 4px;
+        padding: 6px 8px;
+        text-align: center;
+        background: #000000;
+    }
+    .member-name {
+        font-size: 11px;
+        font-weight: 700;
+        color: #ffffff;
+        line-height: 1.25;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .member-reg {
+        font-size: 10px;
+        font-family: Consolas, monospace;
+        color: #22c55e;
+        font-weight: 700;
+        margin-top: 4px;
+        border-top: 1px dashed #333333;
+        padding-top: 3px;
+    }
+
+    /* 3. Main Body Columns */
+    .content-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        flex: 1;
+    }
+    .card-box {
+        border: 2px solid #ffffff;
+        border-radius: 6px;
+        padding: 14px 16px;
+        background: #050505;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .card-title-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ffffff;
+        padding-bottom: 6px;
+        margin-bottom: 10px;
+    }
+    .card-heading {
+        font-size: 14px;
+        font-weight: 800;
+        color: #ffff00;
+        letter-spacing: 0.5px;
+    }
+    .badge-blue {
+        background: #3b82f6;
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 800;
+        padding: 3px 8px;
+        border-radius: 3px;
+        letter-spacing: 0.5px;
+    }
+    .badge-violet {
+        background: #8b5cf6;
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 800;
+        padding: 3px 8px;
+        border-radius: 3px;
+        letter-spacing: 0.5px;
+    }
+
+    /* Code Display (Zero Red Inside) */
+    .code-container {
+        background: #000000;
+        border: 1px solid #333333;
+        border-radius: 4px;
+        padding: 10px 14px;
+        font-family: Consolas, monospace;
+        font-size: 11px;
+        line-height: 1.5;
+        color: #ffffff;
+        white-space: pre-wrap;
+        flex: 1;
+    }
+    .kw { color: #8b5cf6; font-weight: bold; }
+    .fn { color: #3b82f6; }
+    .st { color: #22c55e; }
+    .cm { color: #ffff00; opacity: 0.75; font-style: italic; }
+
+    /* Pipeline Steps */
+    .steps-container {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+    .step-row {
+        border: 1px solid #ffffff;
+        border-left: 5px solid #3b82f6;
+        border-radius: 3px;
+        padding: 6px 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #000000;
+    }
+    .step-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: #ffffff;
+    }
+    .step-tech {
+        font-size: 11px;
+        color: #ffff00;
+        font-weight: 700;
+        font-family: Consolas, monospace;
+    }
+
+    /* Key Capabilities Section */
+    .feature-section {
+        border-top: 1px solid #333333;
+        padding-top: 8px;
+        margin-top: 10px;
+    }
+    .feature-title {
+        font-size: 12px;
+        font-weight: 800;
+        color: #ffff00;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    ul.feature-list {
+        list-style: none;
+    }
+    ul.feature-list li {
+        font-size: 11.5px;
+        color: #ffffff;
+        padding: 2.5px 0;
+        display: flex;
+        align-items: center;
+    }
+    ul.feature-list li::before {
+        content: "✔";
+        color: #22c55e;
+        font-weight: 900;
+        margin-right: 8px;
+        font-size: 12px;
+    }
+</style>
+</head>
+<body>
+
+    <!-- 1. Header with Link Back to Live Dashboard -->
+    <div class="header-box">
+        <div class="header-title-group">
+            <h1>AI-Based Spam Email Detection System</h1>
+            <p>Machine Learning & Natural Language Processing Web Application</p>
+        </div>
+        <a href="index.html" class="nav-btn">&#8592; Back to Dashboard</a>
+    </div>
+
+    <!-- 2. Academic Guide & 5 Team Members -->
+    <div class="academic-section">
+        <div class="prof-panel">
+            <div class="guide-tag">Guided By</div>
+            <div class="prof-name">Prof. Dona Chakraborty</div>
+            <div class="prof-dept">Dept. of Computer Science & Engineering (CSE)</div>
+        </div>
+        <div class="team-panel">
+            <div class="team-header-row">
+                <span class="team-tag">Submitted By (Project Team)</span>
+                <span class="branch-tag">Branch: CSE</span>
+            </div>
+            <div class="team-grid">
+                <div class="member-card">
+                    <div class="member-name">Dibakar Sarkar</div>
+                    <div class="member-reg">2301326097</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-name">Subham Mohapatra</div>
+                    <div class="member-reg">2301326256</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-name">Bhabani Sankar Choudhury</div>
+                    <div class="member-reg">2301326066</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-name">Bibhu Raj Sahu</div>
+                    <div class="member-reg">2301326070</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-name">Gyan Ranjan Nayak</div>
+                    <div class="member-reg">2301326107</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Main Content: Core Code & Pipeline Architecture -->
+    <div class="content-section">
+        <!-- Left: Cleaned Python Code (Zero Red Inside) -->
+        <div class="card-box">
+            <div class="card-title-bar">
+                <span class="card-heading">CORE BACKEND LOGIC</span>
+                <span class="badge-blue">backend/app.py</span>
+            </div>
+            <div class="code-container"><span class="cm"># Clean text, extract TF-IDF weights, & classify</span>
+<span class="kw">from</span> flask <span class="kw">import</span> Flask, request, jsonify
+<span class="kw">import</span> pickle, re
+
+app = Flask(__name__)
+model = pickle.load(open(<span class="st">'model.pkl'</span>, <span class="st">'rb'</span>))
+tfidf = pickle.load(open(<span class="st">'tfidf_vectorizer.pkl'</span>, <span class="st">'rb'</span>))
+
+<span class="kw">def</span> <span class="fn">clean_text</span>(text):
+    text = re.sub(<span class="st">r'[^a-zA-Z\s]'</span>, <span class="st">' '</span>, text)
+    <span class="kw">return</span> text.lower().strip()
+
+<span class="kw">@app.route</span>(<span class="st">'/api/predict'</span>, methods=[<span class="st">'POST'</span>])
+<span class="kw">def</span> <span class="fn">predict</span>():
+    data = request.json
+    subject = data.get(<span class="st">'subject'</span>, <span class="st">''</span>)
+    body = data.get(<span class="st">'body'</span>, <span class="st">''</span>)
+    
+    clean_msg = clean_text(subject + <span class="st">" "</span> + body)
+    features = tfidf.transform([clean_msg])
+    result = model.predict(features)[0]
+    
+    <span class="kw">return</span> jsonify({<span class="st">'prediction'</span>: result})</div>
+        </div>
+
+        <!-- Right: Pipeline Architecture & Capabilities -->
+        <div class="card-box">
+            <div>
+                <div class="card-title-bar">
+                    <span class="card-heading">SYSTEM PIPELINE</span>
+                    <span class="badge-violet">WORKFLOW</span>
+                </div>
+                <div class="steps-container">
+                    <div class="step-row">
+                        <span class="step-title">1. Client Interface</span>
+                        <span class="step-tech">HTML5, CSS3, JavaScript</span>
+                    </div>
+                    <div class="step-row">
+                        <span class="step-title">2. API Request</span>
+                        <span class="step-tech">POST /api/predict (JSON)</span>
+                    </div>
+                    <div class="step-row">
+                        <span class="step-title">3. Text Preprocessing</span>
+                        <span class="step-tech">Regex Cleaning & Lowercasing</span>
+                    </div>
+                    <div class="step-row">
+                        <span class="step-title">4. ML Classification</span>
+                        <span class="step-tech">TF-IDF Vectorizer + Naive Bayes</span>
+                    </div>
+                    <div class="step-row">
+                        <span class="step-title">5. Persistence</span>
+                        <span class="step-tech">SQLite Database Logs</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-title">Key Capabilities</div>
+                <ul class="feature-list">
+                    <li>Detects phishing links, fraudulent urgency, and spam tokens</li>
+                    <li>Real-time classification via lightweight Python REST API</li>
+                    <li>Local database audit logging for past email scan records</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

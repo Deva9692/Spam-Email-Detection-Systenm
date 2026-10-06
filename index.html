@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-Based Spam Email Detection System</title>
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <header class="top-nav">
+    <!-- Navigation Bar -->
+    <header class="top-nav">
+      <div class="brand">
+        <div class="logo-icon">&#128737;</div>
+        <div class="brand-text">
+          <span class="brand-name">PhishShield AI</span>
+          <span class="brand-sub">Spam & Phishing Telemetry Platform</span>
+        </div>
+      </div>
+      <div class="nav-badges" style="display: flex; align-items: center; gap: 12px;">
+        <span class="status-badge pulse">Engine: Active (TF-IDF + Classifier)</span>
+        <!-- Direct Link to info.html -->
+        <a href="info.html" style="text-decoration: none; color: #ffff00; border: 1.5px solid #ffff00; padding: 5px 12px; border-radius: 4px; font-size: 12px; font-weight: 700; background: #000000; transition: 0.2s;" onmouseover="this.style.background='#ffff00'; this.style.color='#000000';" onmouseout="this.style.background='#000000'; this.style.color='#ffff00';">
+          &#9432; Project Info
+        </a>
+      </div>
+    </header>
+    <div class="brand">
+      <div class="logo-icon">&#128737;</div>
+      <div class="brand-text">
+        <span class="brand-name">PhishShield AI</span>
+        <span class="brand-sub">Spam & Phishing Telemetry Platform</span>
+      </div>
+    </div>
+    <div class="nav-badges">
+      <span class="status-badge pulse">Engine: Active (TF-IDF + Classifier)</span>
+    </div>
+  </header>
+
+  <!-- Dashboard Grid -->
+  <main class="dashboard-grid">
+    <!-- Left Column: Input Section -->
+    <section class="card input-card">
+      <div class="card-header">
+        <h2>Email Content Inspector</h2>
+        <p>Analyze email content in real time using Natural Language Processing.</p>
+      </div>
+
+      <form id="emailForm" class="email-form">
+        <div class="form-group">
+          <label for="senderInput">Sender Address (Optional)</label>
+          <input 
+            type="email" 
+            id="senderInput" 
+            placeholder="e.g., security-alert@update-service99.com"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="subjectInput">Subject Line (Optional)</label>
+          <input 
+            type="text" 
+            id="subjectInput" 
+            placeholder="e.g., URGENT: Verify your account within 24 hours"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="emailBody">Email Body <span class="required">*</span></label>
+          <textarea 
+            id="emailBody" 
+            rows="10" 
+            placeholder="Paste raw email text or message content here..." 
+            required
+          ></textarea>
+        </div>
+
+        <div class="action-buttons">
+          <button type="submit" id="analyzeBtn" class="btn btn-primary">
+            <span class="btn-text">Analyze Email</span>
+            <span class="spinner" id="btnSpinner"></span>
+          </button>
+          <button type="button" id="sampleSpamBtn" class="btn btn-outline">Load Sample Spam</button>
+          <button type="button" id="sampleHamBtn" class="btn btn-outline">Load Sample Safe</button>
+          <button type="button" id="clearBtn" class="btn btn-secondary">Clear</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Right Column: Diagnostics & Result Telemetry -->
+    <section class="card results-card" id="resultsSection">
+      <!-- Default Placeholder State -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">&#128269;</div>
+        <h3>No Email Analyzed Yet</h3>
+        <p>Submit an email body on the left to inspect its risk indicators and classification.</p>
+      </div>
+
+      <!-- Result View (Revealed after analysis) -->
+      <div class="result-details hidden" id="resultDetails">
+        <!-- Verdict Banner -->
+        <div class="verdict-banner" id="verdictBanner">
+          <div class="verdict-meta">
+            <span class="verdict-pill" id="verdictPill">SPAM DETECTED</span>
+            <h2 id="verdictTitle">Malicious Email Identified</h2>
+            <p id="verdictDesc">Confidence: High probability of spam or deceptive intent.</p>
+          </div>
+          <div class="score-circle" id="scoreCircle">
+            <span class="score-number" id="scoreValue">98%</span>
+            <span class="score-label">SPAM PROB</span>
+          </div>
+        </div>
+
+        <!-- Risk Telemetry Bars -->
+        <div class="telemetry-box">
+          <h3>Multi-Factor Risk Telemetry</h3>
+          <div class="metric-item">
+            <div class="metric-header">
+              <span>Urgency & Coercive Phrasing</span>
+              <span id="metricUrgencyVal">88%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill warning" id="metricUrgencyBar" style="width: 88%;"></div>
+            </div>
+          </div>
+
+          <div class="metric-item">
+            <div class="metric-header">
+              <span>Suspicious Hyperlinks / Domains</span>
+              <span id="metricLinksVal">95%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill danger" id="metricLinksBar" style="width: 95%;"></div>
+            </div>
+          </div>
+
+          <div class="metric-item">
+            <div class="metric-header">
+              <span>Spam Keyword Density (TF-IDF)</span>
+              <span id="metricSpamWordsVal">92%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill danger" id="metricSpamWordsBar" style="width: 92%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Explainable AI (XAI) Rationale -->
+        <div class="rationale-box">
+          <h3>Detection Rationale (XAI)</h3>
+          <ul id="rationaleList"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
